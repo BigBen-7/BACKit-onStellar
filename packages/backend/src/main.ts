@@ -1,11 +1,13 @@
 import { NestFactory } from '@nestjs/core';
 import { Logger, ValidationPipe } from '@nestjs/common';
+import { AppModule } from './app.module';
+import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  
+
   // Enable CORS
   app.enableCors({
     origin: process.env.FRONTEND_URL || 'http://localhost:3000',
@@ -25,6 +27,16 @@ async function bootstrap() {
   );
 
   // Swagger configuration
+  app.enableCors();
+
+  // Use global validation pipe
+  app.useGlobalPipes(new ValidationPipe({
+    whitelist: true,
+    forbidNonWhitelisted: true,
+    transform: true,
+  }));
+
+  // Setup Swagger documentation
   const config = new DocumentBuilder()
     .setTitle('BACKit on Stellar API')
     .setDescription(
@@ -87,6 +99,11 @@ async function bootstrap() {
         theme: 'monokai',
       },
     },
+  SwaggerModule.setup('api', app, document);
+
+  const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3001;
+  await app.listen(port, () => {
+    console.log(`Server running on port \${port}`);
   });
 
   const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3001;
