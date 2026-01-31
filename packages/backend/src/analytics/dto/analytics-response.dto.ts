@@ -10,12 +10,12 @@ export class ChartDataPoint {
 
 export class ProfitDataPoint extends ChartDataPoint {
   @ApiProperty({ description: 'Cumulative profit in XLM' })
-  value: number;
+  declare value: number;
 }
 
 export class AccuracyDataPoint extends ChartDataPoint {
   @ApiProperty({ description: 'Accuracy percentage (0-100)' })
-  value: number;
+  declare value: number;
 }
 
 export class WinLossCount {
