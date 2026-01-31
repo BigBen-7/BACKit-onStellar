@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { DateRangeFilter } from './dto/analytics-query.dto';
@@ -8,26 +8,8 @@ import {
   AccuracyDataPoint,
   WinLossCount,
 } from './dto/analytics-response.dto';
-
-// Assuming these entities exist in your project
-// Adjust import paths as needed
-interface Call {
-  id: string;
-  creatorAddress: string;
-  outcome: 'YES' | 'NO' | 'PENDING';
-  createdAt: Date;
-  resolvedAt?: Date;
-}
-
-interface Stake {
-  id: string;
-  callId: string;
-  userAddress: string;
-  amount: number;
-  position: 'YES' | 'NO';
-  createdAt: Date;
-  profitLoss?: number;
-}
+import { Call } from './entities/call.entity';
+import { Stake } from './entities/stake.entity';
 
 @Injectable()
 export class AnalyticsService {
@@ -36,7 +18,7 @@ export class AnalyticsService {
     private readonly callRepository: Repository<Call>,
     @InjectRepository(Stake)
     private readonly stakeRepository: Repository<Stake>,
-  ) {}
+  ) { }
 
   /**
    * Get comprehensive analytics for a user
@@ -309,7 +291,7 @@ export class AnalyticsService {
 
     while (currentDate <= endDate) {
       const dateStr = currentDate.toISOString().split('T')[0];
-      
+
       if (existingDatesMap.has(dateStr)) {
         const dataPoint = existingDatesMap.get(dateStr)!;
         filledData.push(dataPoint);
