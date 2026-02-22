@@ -75,3 +75,4 @@ secret_*
 # Misc
 .vercel
 .netlify
+issue.md
